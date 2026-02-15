@@ -28,6 +28,7 @@ ________________________________________________________________________________
 📘 Module 1.  Save Messages into DynamoDB (Backend Only)
 
 🎯 Objective
+
     Learn how a WebSocket request from browser can be stored in DynamoDB using API Gateway + Lambda.
     At the end:
             •	Messages are saved in DB
@@ -38,6 +39,7 @@ ________________________________________________________________________________
 
 STEP 1 — Create DynamoDB Table
     Create a table to store chat messages. It needs because Every chat system must persist messages so they are not lost.
+    
     ACTION
 
             AWS Console → DynamoDB → Create table
@@ -316,4 +318,5 @@ STEP 5 — Chat Web Page (Final UI)
         ✔ Send message
         ✔ Appears instantly in both
         🎉 Real-time serverless chat built
+
 
