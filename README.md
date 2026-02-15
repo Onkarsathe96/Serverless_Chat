@@ -50,6 +50,7 @@ STEP 1 — Create DynamoDB Table
 
 STEP 2 — Create WebSocket API
     Create WebSocket-based API (not REST). Chat is real-time → WebSocket is required.
+    
     ACTION
             
             API Gateway → Create API → WebSocket
@@ -61,6 +62,7 @@ STEP 2 — Create WebSocket API
 
 STEP 3 — Create Routes
     Define events that trigger Lambda. WebSocket APIs work using routes, not URLs.
+    
     ACTION
 
             Create routes:
@@ -71,21 +73,29 @@ STEP 3 — Create Routes
 
 STEP 4 — Create Lambda Function
     Lambda will process incoming chat messages. Lambda is the backend logic (serverless).
+   
     ACTION
+    
 
             Lambda → Create function
-            Setting     |    Value
+
+            Setting         |    Value
             Name	    |    chat_handler
             Runtime	    |    Python 3.10
-            Permissions |	Create new role
+            Permissions     |	Create new role
 
 
 STEP 5 — Give Lambda DynamoDB Permission
     It Allow Lambda to write to DynamoDB. Lambda runs with its own identity (IAM role).
+    
     ACTION
+    
             IAM → Roles → chat_handler-role-*
+            
             Attach policy:
+            
             AmazonDynamoDBFullAccess
+            
             ⏳ Wait 30 seconds
 
 
@@ -140,7 +150,10 @@ STEP 8 — Deploy WebSocket API
 
 STEP 9 — Simple Test (No UI Output)
     Send message from browser. Verify backend works.
+    
     HTML
+
+    
             const ws = new WebSocket("WSS_URL_HERE");
             ws.onopen = () => {
             ws.send(JSON.stringify({
@@ -152,13 +165,15 @@ STEP 9 — Simple Test (No UI Output)
             </script>
 
 
+
+
 ✅ EXPECTED RESULT 
         ✔ No error
         ✔ DynamoDB has chat records
         ✔ Nothing appears on screen (correct)
 
 
-
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -169,6 +184,7 @@ Serverless Chat – Display Messages on Web (Realtime)
 
 
 🎯 Objective
+
         Broadcast chat messages to all connected users and show them on the web page.
 
 
@@ -176,29 +192,46 @@ Serverless Chat – Display Messages on Web (Realtime)
 ![alt text](image-1.png)
 
 
+
 STEP 1 — Create Connections Table
+
         WHAT
+        
         Store WebSocket connection IDs.
+        
         WHY
+        
         To send message back, AWS needs connectionId.
+        
         ACTION
+        
         DynamoDB → Create table
-        Setting	Value
-        Table name	ChatConnections
-        Partition key	connection_id (String)
+        
+         Setting	|        Value
+        Table name	|        ChatConnections
+        Partition key	|        connection_id (String)
 
 
 STEP 2 — Update Lambda Permissions
+       
         WHAT
+        
         Allow Lambda to:
-        •	Scan connections
-        •	Push messages
+                •	Scan connections
+                •	Push messages
+       
         WHY
+        
         Broadcast requires read + push access.
+        
         ACTION
+        
         Attach policies to Lambda role:
+        
         AmazonDynamoDBFullAccess
+        
         AmazonAPIGatewayInvokeFullAccess
+        
         ⏳ Wait 30 seconds
 
 
@@ -283,3 +316,4 @@ STEP 5 — Chat Web Page (Final UI)
         ✔ Send message
         ✔ Appears instantly in both
         🎉 Real-time serverless chat built
+
