@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test</title>
+</head>
+<body>
+    <script>
+        const ws = new WebSocket("wss://z42otuqx3e.execute-api.ap-south-2.amazonaws.com/prod/");
+ws.onopen = () => {
+  ws.send(JSON.stringify({
+    action:"sendMessage",
+    sender:"Student",
+    message:"Hello"
+  }));
+};
+
+    </script>
+</body>
+</html>

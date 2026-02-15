@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #d1d7db;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    position: relative;
+  }
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 127px;
+    background-color: #00a884;
+    z-index: 0;
+  }
+  .main-container {
+    background: #fff;
+    width: 100%;
+    max-width: 1000px;
+    height: 95vh;
+    box-shadow: 0 17px 50px 0 rgba(0,0,0,.19), 0 12px 15px 0 rgba(0,0,0,.24);
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .header {
+    background-color: #f0f2f5;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    border-bottom: 1px solid #e9edef;
+    box-sizing: border-box;
+  }
+  .header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #54656f;
+    font-weight: 500;
+  }
+  .input-group {
+    background-color: #f0f2f5;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 62px;
+    box-sizing: border-box;
+  }
+  input {
+    padding: 9px 12px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    font-size: 15px;
+  }
+  #name { width: 100px; background: #fff; }
+  #msg { flex-grow: 1; background: #fff; }
+  button {
+    padding: 8px;
+    background: transparent;
+    color: #54656f;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #chat {
+    flex: 1;
+    background-color: #efe7dd;
+    background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
+    padding: 20px 60px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .message-bubble {
+    background: white;
+    padding: 6px 7px 8px 9px;
+    border-radius: 7.5px;
+    box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+    max-width: 65%;
+    align-self: flex-start;
+    position: relative;
+    margin-bottom: 8px;
+  }
+  .message-bubble::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -8px;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-top-color: #fff;
+    border-right-color: #fff;
+    border-bottom: 0;
+  }
+  .message-sender {
+    font-size: 12.8px;
+    color: #d70f64;
+    margin-bottom: 2px;
+    font-weight: 500;
+    line-height: 22px;
+  }
+  .message-text {
+    color: #111b21;
+    font-size: 14.2px;
+    line-height: 19px;
+  }
+</style>
+</head>
+<body>
+
+<div class="main-container">
+  <div class="header">
+    <h3>Serverless Chat</h3>
+  </div>
+  <div id="chat"></div>
+  <div class="input-group">
+    <input id="name" placeholder="Name">
+    <input id="msg" placeholder="Type a message" onkeydown="if(event.key==='Enter') send()">
+    <button onclick="send()">
+      <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M1.101 21.757 23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+const ws = new WebSocket("wss://z42otuqx3e.execute-api.ap-south-2.amazonaws.com/prod/");
+
+ws.onmessage = e => {
+  const d = JSON.parse(e.data);
+  const chat = document.getElementById("chat");
+  
+  const bubble = document.createElement("div");
+  bubble.className = "message-bubble";
+  
+  const sender = document.createElement("div");
+  sender.className = "message-sender";
+  sender.textContent = d.sender;
+  
+  const text = document.createElement("div");
+  text.className = "message-text";
+  text.textContent = d.message;
+  
+  bubble.appendChild(sender);
+  bubble.appendChild(text);
+  chat.appendChild(bubble);
+  
+  // Auto scroll to bottom
+  chat.scrollTop = chat.scrollHeight;
+};
+
+function send(){
+  ws.send(JSON.stringify({
+    action:"sendMessage",
+    sender:document.getElementById("name").value,
+    message:document.getElementById("msg").value
+  }));
+
+  
+}
+</script>
+</body>
+</html>
